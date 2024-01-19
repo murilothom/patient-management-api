@@ -7,7 +7,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Patient } from './schemas/patient.schema';
 import { PatientModel } from '../types/contracts';
 import { Model } from 'mongoose';
-import { PatientDto } from '../types/patient.dto';
 import { QueryParams } from '../types/query-params';
 
 @Injectable()
@@ -52,7 +51,7 @@ export class PatientService {
     return patient.toObject();
   }
 
-  async create(dto: PatientDto): Promise<Patient> {
+  async create(dto: Patient): Promise<Patient> {
     const patient = await this.patientModel.findOne({
       $or: [{ document: dto.document }, { rg: dto.rg }, { email: dto.email }],
     });
@@ -64,7 +63,7 @@ export class PatientService {
     return this.patientModel.create(dto);
   }
 
-  async update(id: string, dto: PatientDto) {
+  async update(id: string, dto: Patient) {
     const patient = await this.patientModel.findById(id);
 
     if (!patient) {
