@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  MinLength,
   IsEmail,
   IsOptional,
   IsPostalCode,
@@ -12,6 +13,7 @@ import {
 class Contact {
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Rua Comissário Justo' })
   address: string;
 
@@ -21,27 +23,33 @@ class Contact {
   postalCode: string;
 
   @Prop({ type: String, required: false })
+  @IsOptional()
   @IsString()
+  @MinLength(1)
   @ApiPropertyOptional({ type: String, example: 'Apto 0' })
   complement?: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Santa Maria' })
   city: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Centro' })
   neighborhood: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'RS' })
   uf: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: '000' })
   number: string;
 }
@@ -52,22 +60,26 @@ class Contact {
 export class Patient {
   @Prop({ type: String, required: true, unique: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: '121477964' })
   rg: string;
 
   @Prop({ type: String, required: true, unique: true })
   @IsString()
+  @MinLength(1)
   @Length(11)
   @ApiProperty({ type: String, example: '97472571067' })
   document: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Murilo' })
   name: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Thom' })
   nickname: string;
 
@@ -78,21 +90,25 @@ export class Patient {
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Brasileiro' })
   nationality: string;
 
   @Prop({ type: Date, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: '2002-04-02T13:00:00.345Z' })
   dateOfBirth: Date;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Masculino' })
   gender: string;
 
   @Prop({ type: String, required: true })
   @IsString()
+  @MinLength(1)
   @ApiProperty({ type: String, example: 'Solteiro' })
   maritalStatus: string;
 
