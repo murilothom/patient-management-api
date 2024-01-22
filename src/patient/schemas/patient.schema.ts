@@ -25,7 +25,6 @@ class Contact {
   @Prop({ type: String, required: false })
   @IsOptional()
   @IsString()
-  @MinLength(1)
   @ApiPropertyOptional({ type: String, example: 'Apto 0' })
   complement?: string;
 
