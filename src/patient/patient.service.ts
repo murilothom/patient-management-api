@@ -2,12 +2,14 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Patient } from './schemas/patient.schema';
 import { PatientModel } from '../types/contracts';
 import { Model } from 'mongoose';
 import { QueryParams } from '../types/query-params';
+import { validateBr } from 'js-brasil';
 
 @Injectable()
 export class PatientService {
@@ -52,6 +54,8 @@ export class PatientService {
   }
 
   async create(dto: Patient): Promise<Patient> {
+    this.validateDocument(dto);
+
     const patient = await this.patientModel.findOne({
       $or: [{ document: dto.document }, { rg: dto.rg }, { email: dto.email }],
     });
@@ -64,6 +68,8 @@ export class PatientService {
   }
 
   async update(id: string, dto: Patient) {
+    this.validateDocument(dto);
+
     const patient = await this.patientModel.findById(id);
 
     if (!patient) {
@@ -81,5 +87,12 @@ export class PatientService {
     }
 
     await this.patientModel.findByIdAndDelete(patient.id);
+  }
+
+  private validateDocument(patient: Patient): void | never {
+    const validCPF = validateBr.cpf(patient.document);
+    if (!validCPF) {
+      throw new UnprocessableEntityException('Invalid CPF.');
+    }
   }
 }
