@@ -92,7 +92,7 @@ export class PatientService {
   private validateDocument(patient: Patient): void | never {
     const validCPF = validateBr.cpf(patient.document);
     if (!validCPF) {
-      throw new UnprocessableEntityException('Invalid CPF.');
+      throw new UnprocessableEntityException('Invalid CPF');
     }
   }
 }
