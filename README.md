@@ -12,7 +12,7 @@ $ npm install
 
 Em seguida crie um arquivo `.env`
 
-Com a chave `DB_URI` recebendo URI do banco de dados MongoDB
+Com a chave `DB_URI` recebendo URI do banco de dados MongoDB e a chave `PORT` recebendo a porta
 
 Para rodar a aplicação
 
