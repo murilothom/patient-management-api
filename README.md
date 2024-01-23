@@ -4,7 +4,7 @@ API criada para integrar com front-end web de Gestão de Pacientes
 
 ## Como usar
 
-Instalação das dependências
+Instale as dependências
 
 ```bash
 $ npm install
@@ -20,4 +20,4 @@ Para rodar a aplicação
 $ npm run start:dev
 ```
 
-Com tudo finalizado você pode acessar a documentação da API em http://localhost:3000/swagger
+Com tudo finalizado você pode acessar a documentação da API em http://localhost:`PORT`/swagger
