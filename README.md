@@ -2,7 +2,7 @@
 
 API criada para integrar com front-end web de Gestão de Pacientes
 
-## Como usar
+## Como utilizar
 
 Instale as dependências
 
