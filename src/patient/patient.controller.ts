@@ -8,11 +8,26 @@ import {
   Put,
   Delete,
   Query,
+  Patch,
+  MaxFileSizeValidator,
+  FileTypeValidator,
+  ParseFilePipe,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './schemas/patient.schema';
 import { QueryParams } from '../types/query-params';
 import { ApiResponse } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerConfig } from '../lib/multer/config';
+
+const parseFilePipe = new ParseFilePipe({
+  validators: [
+    new MaxFileSizeValidator({ maxSize: 100000 }),
+    new FileTypeValidator({ fileType: /^(image\/jpeg|image\/png)$/ }),
+  ],
+});
 
 @Controller('patient')
 export class PatientController {
@@ -50,7 +65,6 @@ export class PatientController {
 
   @Put(':id')
   @ApiResponse({
-    status: 200,
     type: Patient,
     description: 'Atualização dos dados do paciente',
   })
@@ -67,5 +81,29 @@ export class PatientController {
   @HttpCode(204)
   delete(@Param('id') id: string): Promise<void> {
     return this.patientService.delete(id);
+  }
+
+  @Patch(':id/picture')
+  @ApiResponse({
+    status: 204,
+    description: 'Upload da image do paciente',
+  })
+  @UseInterceptors(FileInterceptor('file', multerConfig))
+  @HttpCode(204)
+  updateImage(
+    @Param('id') id: string,
+    @UploadedFile(parseFilePipe) file: Express.Multer.File,
+  ): Promise<void> {
+    return this.patientService.updateImage(id, file);
+  }
+
+  @Delete(':id/picture')
+  @ApiResponse({
+    status: 204,
+    description: 'Deleção da image do paciente',
+  })
+  @HttpCode(204)
+  deleteImage(@Param('id') id: string): Promise<void> {
+    return this.patientService.removeImage(id);
   }
 }

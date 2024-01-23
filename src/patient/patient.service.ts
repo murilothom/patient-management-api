@@ -10,6 +10,9 @@ import { PatientModel } from '../types/contracts';
 import { Model } from 'mongoose';
 import { QueryParams } from '../types/query-params';
 import { validateBr } from 'js-brasil';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { Picture } from './schemas/picture.schema';
 
 @Injectable()
 export class PatientService {
@@ -56,27 +59,33 @@ export class PatientService {
   async create(dto: Patient): Promise<Patient> {
     this.validateDocument(dto);
 
-    const patient = await this.patientModel.findOne({
+    const existentPatient = await this.patientModel.findOne({
       $or: [{ document: dto.document }, { rg: dto.rg }, { email: dto.email }],
     });
 
-    if (patient) {
+    if (existentPatient) {
       throw new ConflictException('Patient already created');
     }
 
-    return this.patientModel.create(dto);
+    const patient = await this.patientModel.create(dto);
+
+    return patient.toObject();
   }
 
   async update(id: string, dto: Patient) {
     this.validateDocument(dto);
 
-    const patient = await this.patientModel.findById(id);
+    const existentPatient = await this.patientModel.findById(id);
 
-    if (!patient) {
+    if (!existentPatient) {
       throw new NotFoundException('Patient not found');
     }
 
-    return this.patientModel.findByIdAndUpdate(patient.id, dto, { new: true });
+    const patient = await this.patientModel.findByIdAndUpdate(id, dto, {
+      new: true,
+    });
+
+    return patient.toObject();
   }
 
   async delete(id: string): Promise<void> {
@@ -86,7 +95,43 @@ export class PatientService {
       throw new NotFoundException('Patient not found');
     }
 
-    await this.patientModel.findByIdAndDelete(patient.id);
+    await this.patientModel.findByIdAndDelete(patient._id);
+  }
+
+  async updateImage(id: string, file: Express.Multer.File) {
+    const existentPatient = await this.patientModel.findById(id);
+
+    if (!existentPatient) {
+      throw new NotFoundException('Patient not found');
+    }
+
+    const name = file.filename;
+    const data = fs.readFileSync(path.join('./uploads/pictures/' + name));
+    const src = file.path;
+
+    const picture: Picture = {
+      name,
+      src,
+      base64: `data:image/${file.mimetype};base64,${data.toString('base64')}`,
+    };
+
+    await this.patientModel.findByIdAndUpdate(id, { picture });
+  }
+
+  async removeImage(id: string) {
+    const patient = await this.patientModel.findById(id);
+
+    if (!patient) {
+      throw new NotFoundException('Patient not found');
+    }
+
+    if (!patient.picture) {
+      throw new NotFoundException('Patient has no picture');
+    }
+
+    fs.unlinkSync(patient.picture.src);
+
+    await this.patientModel.findByIdAndUpdate(id, { picture: null });
   }
 
   private validateDocument(patient: Patient): void | never {
