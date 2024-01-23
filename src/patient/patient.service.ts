@@ -95,7 +95,8 @@ export class PatientService {
       throw new NotFoundException('Patient not found');
     }
 
-    await this.patientModel.findByIdAndDelete(patient._id);
+    await this.removeImage(id);
+    await this.patientModel.findByIdAndDelete(id);
   }
 
   async updateImage(id: string, file: Express.Multer.File) {

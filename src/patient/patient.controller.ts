@@ -24,7 +24,7 @@ import { multerConfig } from '../lib/multer/config';
 
 const parseFilePipe = new ParseFilePipe({
   validators: [
-    new MaxFileSizeValidator({ maxSize: 100000 }),
+    new MaxFileSizeValidator({ maxSize: 500000 }),
     new FileTypeValidator({ fileType: /^(image\/jpeg|image\/png)$/ }),
   ],
 });
