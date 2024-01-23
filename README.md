@@ -20,4 +20,4 @@ Para rodar a aplicação
 $ npm run start:dev
 ```
 
-Com tudo finalizado você pode acessar a documentação da API em http://localhost:`PORT`/swagger
+Com tudo finalizado você pode acessar a documentação da API em http://localhost:3000/swagger
